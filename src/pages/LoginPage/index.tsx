@@ -1,3 +1,4 @@
+import Logo from "@/components/shared/Logo";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,7 +14,6 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import logo from "/93920768.png";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("react@test.com");
@@ -39,7 +39,7 @@ const LoginPage = () => {
       toast.success("Login successful");
 
       setTimeout(() => {
-        navigate("/", { replace: true });
+        navigate("/dashboard", { replace: true });
       }, 100);
     } catch (error) {
       console.error("Login error:", error);
@@ -56,9 +56,7 @@ const LoginPage = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
         <CardHeader className="space-y-1 text-center relative">
           <div className="flex justify-center mb-4">
-            <div className="relative w-16 h-16 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center shadow-md">
-              <img src={logo} alt="Logo" className="w-full h-full" />
-            </div>
+            <Logo />
           </div>
           <CardTitle className="text-2xl font-bold">
             Welcome to Sugary

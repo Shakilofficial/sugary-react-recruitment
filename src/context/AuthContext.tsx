@@ -1,11 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react-hooks/exhaustive-deps */
 
+import Loader from "@/components/shared/Loader";
 import { loginUser, refreshTokenAPI } from "@/services/authService";
 import { User } from "@/types";
 import Cookies from "js-cookie";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
   user: User | null;
@@ -22,7 +22,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
 
   const tryRefreshToken = async () => {
     try {
@@ -105,8 +104,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     Cookies.remove("user");
 
     setUser(null);
-
-    navigate("/login", { replace: true });
   };
 
   return (
@@ -119,7 +116,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isLoading,
       }}
     >
-      {!isLoading ? children : <div>Loading authentication...</div>}
+      {!isLoading ? children : <Loader />}
     </AuthContext.Provider>
   );
 };
