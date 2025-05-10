@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,8 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginUser } from "@/services/authService";
-import Cookies from "js-cookie";
+import { useAuth } from "@/context/AuthContext";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +20,10 @@ const LoginPage = () => {
   const [password, setPassword] = useState("playful009");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword((prev) => !prev);
@@ -31,26 +32,18 @@ const LoginPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
 
     try {
-      const response = await loginUser(username, password);
-
-      Cookies.set("accessToken", response.Token, {
-        expires: 1,
-        secure: true,
-        sameSite: "Strict",
-      });
-
-      Cookies.set("refreshToken", response.RefreshToken, {
-        expires: 7,
-        secure: true,
-        sameSite: "Strict",
-      });
-
+      await login(username, password);
       toast.success("Login successful");
 
-      navigate("/dashboard");
+      setTimeout(() => {
+        navigate("/", { replace: true });
+      }, 100);
     } catch (error) {
+      console.error("Login error:", error);
+      setError("Invalid email or password");
       toast.error("Login failed");
     } finally {
       setIsLoading(false);
@@ -75,6 +68,11 @@ const LoginPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="relative">
+          {error && (
+            <div className="bg-red-50 text-red-500 p-3 rounded-md mb-4 text-sm">
+              {error}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username">Email</Label>
