@@ -1,10 +1,8 @@
-import axios from "axios";
 import Cookies from "js-cookie";
-
-const baseApi = "https://sugarytestapi.azurewebsites.net"; //import.meta.env.VITE_BASE_API_URL;
+import { axiosInstance } from "./axiosInstance";
 
 export const loginUser = async (UserName: string, Password: string) => {
-  const res = await axios.post(`${baseApi}/AdminAccount/Login`, {
+  const res = await axiosInstance.post("/AdminAccount/Login", {
     UserName,
     Password,
   });
@@ -14,9 +12,11 @@ export const loginUser = async (UserName: string, Password: string) => {
 export const refreshTokenAPI = async () => {
   const accessToken = Cookies.get("accessToken");
   const refreshToken = Cookies.get("refreshToken");
-  const res = await axios.post(`${baseApi}/Account/RefreshToken`, {
+
+  const res = await axiosInstance.post("/Account/RefreshToken", {
     AccessToken: accessToken,
     RefreshToken: refreshToken,
   });
+
   return res.data;
 };
